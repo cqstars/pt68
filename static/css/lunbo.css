@@ -1,0 +1,43 @@
+#benner {
+    width: 100%;
+    /*height: 340px;
+    margin-left: 15%;
+    margin-top: 10px;*/
+}
+
+#benner .imga {
+    display: none;
+    width: 100%;
+}
+
+#benner .img .active {
+    display: block;
+}
+
+#benner .title {
+    width:150px;
+    height: 16px;
+    background-color: rgba(226, 226, 226, 0.6);
+    border-radius: 30px;
+    float: left;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: -35px;
+    padding: 6px 0px 0px 10px;
+    position: relative;
+}
+
+#benner .title .nr {
+    list-style: none;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 10px;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 0px;
+}
+
+#benner .title .active {
+    background: #db192a;
+}
