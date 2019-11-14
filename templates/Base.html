@@ -5,9 +5,9 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/wx.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/lunbo.css' %}">
-    <script src="//at.alicdn.com/t/font_398012_2kx48kkwl5.js" type="text/javascript"></script>
-    <script src="{% static 'js/lunbo.js' %}" type="text/javascript"></script>
+
+    <script src="//at.alicdn.com/t/font_398012_2cgt2px4dir.js" type="text/javascript"></script>
+
     <title>公司主页</title>
     {% block css %}
     {% endblock %}
@@ -47,11 +47,12 @@
 <!--尾部-->
 <footer>
     <div class="tab" style="color:#f7ef0e">
-        <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-jingdian"></use>
-        </svg>
+        <a href="{% url 'index' %}" style="color: #516f48">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-jingdian"></use>
+            </svg>
 
-        <br/>首页
+            <br/>首页</a>
     </div>
     <div class="tab">
         <svg class="icon" aria-hidden="true">
@@ -68,11 +69,13 @@
         <br/>麻将
     </div>
     <div class="tab">
-        <svg class="icon" aria-hidden="true" style="color:#0ec3f7">
-            <use xlink:href="#icon-zhuce"></use>
-        </svg>
+        <a href="{% url 'users:index' %}"  style="color: #e76f17">
+            <svg class="icon" aria-hidden="true" style="color:#0ec3f7">
+                <use xlink:href="#icon-zhuce"></use>
+            </svg>
 
-        <br/>用户中心
+            <br/>用户中心
+        </a>
     </div>
 </footer>
 {% block js %}

@@ -1,0 +1,28 @@
+{% extends "Base.html" %}
+{% load static %}
+{% block title %}用户中心{% endblock %}
+{% block css %}
+{% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block content %}
+    <div class="content_flex">
+        <a href="{% url 'users:login' %}"><div class="item">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-yonghudenglu"></use>
+            </svg>
+            <br>
+            用户登录
+        </div></a>
+        <div class="item">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-zhuce"></use>
+            </svg>
+            <br>用户注册
+
+        </div>
+    </div>
+    </div>
+{% endblock %}
+{% block js %}
+{% endblock %}
