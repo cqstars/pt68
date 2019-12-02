@@ -1,0 +1,71 @@
+{% extends "Base.html" %}
+{% load static %}
+{% block title %}用户中心{% endblock %}
+{% block css %}
+{% endblock %}
+{% block breadcrumb %}
+
+    {% if request.user.is_authenticated %}
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-yonghudenglu"></use>
+        </svg>{{ user.username }} <strong>用户</strong><span style="color: #ff00ff">{{ user.nick_name }}</span>
+        登录{% endif %}
+{% endblock %}
+{% block content %}
+    <div class="content_flex">
+        <span class="btn2">
+            <a href="{% url 'sc_card:setgame' %}">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shezhi"></use>
+            </svg>
+            <br>设置牌局</a>
+        </span>
+        <span class="btn2">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-mendianzuoye-xitongtubiao-"></use>
+            </svg>
+            <br>牌局总查询
+        </span></div>
+    <div class="content_flex">
+        <strong>目前未结账牌局</strong>
+        <table width="100%" border="0" cellspacing="5"
+               style="text-align: center;font-size: 1em;border-collapse:collapse">
+
+            <tr>
+                <td>牌局时间</td>
+                <td>局名</td>
+                <td>翻数大小</td>
+                <td>是否结账</td>
+                <td></td>
+            </tr>
+            {% for i in current_game %}
+                <tr>
+                    <td><a href="{% url 'sc_card:gamed_detail' i.id %}">{{ i.add_time|date:"Y-m-d-h-m" }}</a></td>
+                    <td><a>{{ i.name }}</a></td>
+
+                    <td>{{ i.rate }}</td>
+
+                    <td>{% if i.ischeck %}已结账{% else %}未结账{% endif %}</td>
+
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="text" name="id" hidden value="{{ i.id }}">
+                            <input type="submit" class="btn" name="sub" value="结账">
+                        </form>
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </table>
+
+
+    </div>
+    <div>
+
+
+    </div>
+
+{% endblock %}
+{% block js %}
+{% endblock %}

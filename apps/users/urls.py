@@ -4,10 +4,14 @@
 # @Site    : 
 # @File    : urls.py
 # @Software: PyCharm
-from django.urls import path
+from django.urls import path,re_path
+from django.views.generic import TemplateView
+
 from . import views
 app_name = 'users'
 urlpatterns = [
     path('', views.indexview.as_view(), name='index'),
-    path('login', views.loginview.as_view(), name='login'),
+    path('login', views.LoginView.as_view(), name='login'),
+    path('reg', views.regview.as_view(), name='reg'),
+    path('fpw', views.fpwView.as_view(), name='fpw'),
 ]

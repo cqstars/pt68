@@ -1,0 +1,39 @@
+{% extends "Base.html" %}
+{% load static %}
+{% block title %}设置牌局{% endblock %}
+{% block css %}
+{% endblock %}
+{% block breadcrumb %}
+    {% if request.user.is_authenticated %}
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-yonghudenglu"></use>
+        </svg>{{ user.username }} <strong>用户</strong><span style="color: #ff00ff">{{ user.nick_name }}</span>
+        登录{% endif %}
+{% endblock %}
+{% block content %}
+    <div class="content_flex">
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <strong>选择用户:</strong>
+                {% for p in seluser %}
+                    <input type="checkbox" name="player{{ p.id }}" v=0 id="{{ forloop.counter }}" value="{{ p.id }}"/>
+                    {{ p.nick_name }}
+                {% endfor %}
+
+            </div>
+            <div>
+                <strong>设置翻大小:</strong><input type="text" name="rate" id="rate" value="2"/>
+
+            </div>
+            <div style="text-align: right">
+                <input class="btn" type="submit" value="确定">
+            </div>
+        </form>
+    </div>
+    <div class="errorlist">
+    {% if msg %}{{ msg }}{% endif %}</div>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

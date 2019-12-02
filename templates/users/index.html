@@ -6,7 +6,9 @@
 {% block breadcrumb %}
 {% endblock %}
 {% block content %}
+    <div class="content_flex"> {% if request.user.is_authenticated %}{{ user.username}}用户登录{% endif %}</div>
     <div class="content_flex">
+
         <a href="{% url 'users:login' %}"><div class="item">
             <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-yonghudenglu"></use>
@@ -14,6 +16,7 @@
             <br>
             用户登录
         </div></a>
+        <a href="{% url 'users:reg' %}">
         <div class="item">
             <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-zhuce"></use>
@@ -21,8 +24,15 @@
             <br>用户注册
 
         </div>
+        </a> <div class="item">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-zhuce"></use>
+            </svg>
+            <br>用户退出
+
+        </div></a>
     </div>
-    </div>
+
 {% endblock %}
 {% block js %}
 {% endblock %}

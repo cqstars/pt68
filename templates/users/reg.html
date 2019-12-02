@@ -1,0 +1,56 @@
+{% extends "Base.html" %}
+{% load static %}
+{% block title %}用户注册{% endblock %}
+{% block css %}
+{% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block content %}
+    <div class="content_flex" style="justify-content:center">
+        <form action="{% url 'users:reg' %}" method="post" onsubmit="return toVaild(this)">
+            <table width="100%">
+
+                {% for i in f %}
+                    <tr>
+                        <td>
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#icon-bitian"></use>
+                            </svg>
+                        </td>
+                        <td><strong>{{ i.label_tag }}</strong></td>
+                        <td>{{ i }}{{ i.errors }}</td>
+
+                    </tr>
+                {% endfor %}
+                {% csrf_token %}
+
+            </table>
+            <p style="text-align: right"><input class="btn" type="submit" value="注册">
+            </p>
+        </form>
+
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        function toVaild(e) {
+            var pw1 = e.id_password.value;
+            var pw2 = e.id_password2.value;
+
+            if (pw1 == pw2) {
+                if (pw1.length > 5) {
+                    return true;
+                }
+                else {
+                    alert("密码至少6位");
+                    return false;
+                }
+            }
+            else {
+                alert("设置不一致");
+                return false;
+            }
+        }
+    </script>
+{% endblock %}

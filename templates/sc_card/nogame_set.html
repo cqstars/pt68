@@ -1,0 +1,102 @@
+{% extends "Base.html" %}
+{% load static %}
+{% block title %}设置牌局{% endblock %}
+{% block css %}
+{% endblock %}
+{% block breadcrumb %}
+    {% if request.user.is_authenticated %}
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-yonghudenglu"></use>
+        </svg>{{ user.username }} <strong>用户</strong><span style="color: #ff00ff">{{ user.nick_name }}</span>
+        登录{% endif %}
+{% endblock %}
+{% block content %}
+    <div class="set_game">
+
+        <div>
+            <strong>选择用户:</strong>
+            {% for p in seluser %}
+                <input type="radio" name="vehicle{{ p.id }}" v=0 id="{{ forloop.counter }}" value="{{ p.id }}"
+                       onclick="sel(this)"/>{{ p.nick_name }}
+            {% endfor %}
+
+        </div>
+        <div>
+            <strong>设置翻大小:</strong><input type="text" name="rate" id="rate" value="2"/>
+
+        </div>
+        <div>
+            <a class="btn" onclick="set_game()">确定</a>
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        var array1 = new Array();
+
+        function sel(e) {
+            var myv = e.attributes["v"].nodeValue;
+            console.log(myv);
+            if (myv == 0) {
+                e.setAttribute("v", 1);
+                e.checked = true;
+                array1.push(e.value);
+
+            } else {
+                e.setAttribute("v", 0);
+                e.checked = false;
+                array1.pop(e.value);
+            }
+        }
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+        function set_game() {
+
+            var csrftoken = getCookie('csrftoken');
+            // var myconfirm = confirm("❉确认❉:\n" + "▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n" + b + "▶编码为" + a + "\n▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n" + "作为你的一级科目");
+            console.log(array1);
+            console.log(rate.value);
+
+            postData = {"player": array1};
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    str = xmlhttp.responseText;
+                    alert(str);
+                }
+            }
+            xmlhttp.open("POST", "{% url 'sc_card:index' %}", true);
+            xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            data = "player=" + array1+"&rate="+rate.value;
+            xmlhttp.setRequestHeader('X-CSRFToken', csrftoken);
+            xmlhttp.send(data);
+        }
+
+    </script>
+{% endblock %}

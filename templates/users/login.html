@@ -6,10 +6,38 @@
 {% block breadcrumb %}
 {% endblock %}
 {% block content %}
-    <div class="content_flex">
+    <div class="content_flex" style="justify-content: center;align-items: center">
+        <div class="login_box">
+            <h2>
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-yonghudenglu"></use>
+                </svg>
+                帐号登录
+            </h2>
+            <form action="{% url 'users:login' %}" method="post" autocomplete="off">
+                {% csrf_token %}
+                <div class="form_item{% if login_form.errors.username %}errorput{% endif %}">
+                    <label><strong>用&nbsp;户&nbsp;名：</strong></label>
+                    <input name="username" id="account_l" type="text" placeholder="用户名/手机号"/>
+                </div>
+                <div class="form_item{% if login_form.errors.password %}errorput{% endif %}">
+                    <label><strong>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</strong></label>
+                    <input name="password" id="password_l" type="password" placeholder="请输入您的密码"/>
+                </div>
+                <div class="error btns login-form-tips">
+                    {% for key,error in login_form.errors.items %}{{ error }}{% endfor %}{{ msg }}</div>
+                <div class="form_item">
+                    {#                        <label><input type="checkbox" id="jsAutoLogin"> 自动登录</label>#}
+                    <a class="fr" href="{% url 'users:fpw' %}">忘记密码？</a>
+                </div>
+                <div class="form_item">
+                    <input class="btn" id="jsLoginBtn" type="submit" value="立即登录 > "/>
+                </div>
 
-        用户登录
-    </div>
+
+            </form>
+            <p class="form_item">没有圣天国学账号？<a href="{% url 'users:reg' %}">[立即注册]</a></p>
+        </div>
     </div>
 {% endblock %}
 {% block js %}
