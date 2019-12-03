@@ -17,18 +17,18 @@ class game(models.Model):
         return self.name
 
     def get_gamedetails(self):
-        return self.gamedetails_set.all()
+        return self.gametodetail.all()
 
     def get_gamepalyers(self):
-        return self.gamepalyers_set.all()
+        return self.gametoplayer.all()
 
 
 class gamedetails(models.Model):
-    game=models.ForeignKey(game,on_delete=models.CASCADE,verbose_name="局名")
+    game=models.ForeignKey(game,on_delete=models.CASCADE,verbose_name="局名",related_name="gametodetail")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="时间")
-    gamewinner=models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="获胜选手",related_name="gamewinner")
-    gameloser1=models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="失败选手1",related_name="gameloser1")
-    gameloser2=models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="失败选手2",related_name="gameloser12")
+    gamewinner=models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="获胜选手",related_name="gametowinner")
+    gameloser1=models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="失败选手1",related_name="gametoloser1")
+    gameloser2=models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="失败选手2",related_name="gametoloser2")
     score=models.DecimalField(max_digits=5,decimal_places=2,verbose_name="翻数")
 
     class Meta:
@@ -39,8 +39,8 @@ class gamedetails(models.Model):
         return self.game
 
 class gamepalyers(models.Model):
-    game = models.ForeignKey(game, on_delete=models.CASCADE, verbose_name="局名",related_name="game")
-    player = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="选手",related_name="player")
+    game = models.ForeignKey(game, on_delete=models.CASCADE, verbose_name="局名",related_name="gametoplayer")
+    player = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="选手",related_name="playertouser")
     score = models.DecimalField(max_digits=5, decimal_places=2,default=0)
 
     class Meta:

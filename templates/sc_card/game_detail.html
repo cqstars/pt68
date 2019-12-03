@@ -1,6 +1,6 @@
 {% extends "Base.html" %}
 {% load static %}
-{% block title %}第几局{% endblock %}
+{% block title %}{{ this_game.name }}{% endblock %}
 {% block css %}
 {% endblock %}
 {% block breadcrumb %}
@@ -11,104 +11,90 @@
         登录{% endif %}
 {% endblock %}
 {% block content %}
-    <div class="set_game">
+    <div class="content_flex">
+        {{ this_game.name }}{{ this_game.rate }}{{ this_game.ischeck }}
+        {% for p in this_game.get_gamepalyers %}
+            {{ p.player.nick_name }}
+        {% endfor %}
+    </div>
 
-        <div class="content_flex">
-        <form action="{% url 'sc_card:index' %}" method="post">
+
+    <div class="content_flex">
+        <form action="{% url 'sc_card:game_detail' this_game.id %}" method="POST" onsubmit="return checkForm()">
             {% csrf_token %}
-            {{ f.thisgame }}
-            <br>
-            {{ f.gamewinner }}
-            <br>
-{#            {% for book in f %}#}
-{#                <div>#}
-                    {# 拿到数据字段的labels,没有就默认显示字段名 #}
-{#                    <label>{{ book.label }}</label>#}
-{#                    <div>{{ book }}{{ book.help_text }}</div>#}
-{#                </div>#}
-{#            {% endfor %}#}
+            <div>
+                <input type="hidden" name="gameid" value="{{ this_game.id }}">
+            </div>
+
+            <div>
+
+                <strong>获胜选手:</strong>
+                {% for p in this_game.get_gamepalyers %}
+                    <input type="radio" name="winner" value="{{ p.id }}"/>
+                    {{ p.player.nick_name }}
+                {% endfor %}
+
+            </div>
+            <div>
+                <strong>赢几番:</strong>
+                <input type="text" name="score">
+
+            </div>
+            <div>
+
+                {% if this_game.get_gamepalyers %}
+                    <strong>失败选手:</strong>
+
+                    {% for p in this_game.get_gamepalyers %}
+                        <input type="checkbox" name="loser" value="{{ p.id }}"/>
+                        {{ p.player.nick_name }}
+                    {% endfor %}
+
+                    </div>
+                {% endif %}
+
+
             <input type="submit" value="提交" class="btn">
         </form>
     </div>
     <strong>牌局明细情况</strong>
     <div class="content_flex">
-        <table width="100%" border="1" cellspacing="1" style="text-align: center;font-size: 0.8em;border-collapse:collapse">
-        <tr><th>时间</th><th>翻数</th><th>赢</th><th>输</th><th>输</th></tr>
-            {% for i in gamedetail %}
-                <tr><td>{{ i.add_time|date:'h时m分' }}</td><td>{{ i.score }}</td><td>{{ i.gamewinner }}</td><td>{{ i.gameloser1 }}</td><td>{{ i.gameloser2 }}</td></tr>
-            {% endfor %}
+        {% if game_detail %}
+            <table width="100%" border="1" cellspacing="1"
+                   style="text-align: center;font-size: 0.8em;border-collapse:collapse">
+                <tr>
+                    <th>时间</th>
+                    <th>翻数</th>
+                    <th>赢</th>
+                    <th>输</th>
+                    <th>输</th>
+                </tr>
+                {% for i in game_detail %}
+                    <tr>
+                        <td>{{ i.add_time|date:'h时m分' }}</td>
+                        <td>{{ i.score }}</td>
+                        <td>{{ i.gamewinner }}</td>
+                        <td>{{ i.gameloser1 }}</td>
+                        <td>{{ i.gameloser2 }}</td>
+                    </tr>
+                {% endfor %}
 
-        </table>
+            </table>
+        {% else %}
+            <div class="errorlist">还没有开始</div>
+        {% endif %}
+
+
     </div>
 
-    </div>
+
 
 {% endblock %}
 {% block js %}
     <script type="text/javascript">
-        var array1 = new Array();
+        function checkForm() {
+            alert("ok")
 
-        function sel(e) {
-            var myv = e.attributes["v"].nodeValue;
-            console.log(myv);
-            if (myv == 0) {
-                e.setAttribute("v", 1);
-                e.checked = true;
-                array1.push(e.value);
-
-            } else {
-                e.setAttribute("v", 0);
-                e.checked = false;
-                array1.pop(e.value);
-            }
         }
-
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-
-        function set_game() {
-
-            var csrftoken = getCookie('csrftoken');
-            // var myconfirm = confirm("❉确认❉:\n" + "▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n" + b + "▶编码为" + a + "\n▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n" + "作为你的一级科目");
-            console.log(array1);
-            console.log(rate.value);
-
-            postData = {"player": array1};
-            var xmlhttp;
-            if (window.XMLHttpRequest) {
-                // code for IE7+, Firefox, Chrome, Opera, Safari
-                xmlhttp = new XMLHttpRequest();
-            }
-            else {
-                // code for IE6, IE5
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    str = xmlhttp.responseText;
-                    alert(str);
-                }
-            }
-            xmlhttp.open("POST", "{% url 'sc_card:index' %}", true);
-            xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            data = "player=" + array1+"&rate="+rate.value;
-            xmlhttp.setRequestHeader('X-CSRFToken', csrftoken);
-            xmlhttp.send(data);
-        }
-
     </script>
 {% endblock %}

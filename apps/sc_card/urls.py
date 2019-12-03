@@ -11,7 +11,7 @@ from . import views
 app_name = 'sc_card'
 urlpatterns = [
     path('', views.indexview.as_view(), name='index'),
-    path('gamed_detail/<int:id>/', views.game_detailview.as_view(), name='gamed_detail'),
+    path('game_detail/<int:id>/', views.game_detailview.as_view(), name='game_detail'),
     path('setgame', views.setgameview.as_view(), name='setgame'),
 
     # path('login', views.LoginView.as_view(), name='login'),

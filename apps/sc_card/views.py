@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from .models import *
 from users.models import UserProfile
+
 from .forms import *
 
 from django.contrib.auth.decorators import login_required
@@ -14,30 +15,14 @@ from django.utils.decorators import method_decorator
 class indexview(View):
     def get(self, request):
         mygame=game.objects.filter(ischeck=False)
-        if mygame:
-            return render(request, "sc_card/index.html",{"current_game":mygame})
-        else:
-            players=UserProfile.objects.exclude(is_superuser=True)
-            return render(request,"sc_card/nogame_set.html",{"seluser":players})
-
+        return render(request, "sc_card/index.html",{"current_game":mygame})
 
     def post(self, request):
         id = request.POST.get("id","")
-        if id:
-            game.objects.filter(id=id).update(ischeck=True)
-            mygame = game.objects.filter(ischeck=False)
-            if mygame:
-                return render(request, "sc_card/index.html", {"current_game": mygame})
-            else:
-                players = UserProfile.objects.exclude(is_superuser=True)
-                return render(request, "sc_card/nogame_set.html", {"seluser": players})
-        else:
-            mygame = game.objects.filter(ischeck=False)
-            if mygame:
-                return render(request, "sc_card/index.html", {"current_game": mygame})
-            else:
-                players = UserProfile.objects.exclude(is_superuser=True)
-                return render(request, "sc_card/nogame_set.html", {"seluser": players})
+        game.objects.filter(id=id).update(ischeck=True)
+        mygame = game.objects.filter(ischeck=False)
+        return render(request, "sc_card/index.html", {"current_game": mygame})
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -49,7 +34,7 @@ class setgameview(View):
         rate = request.POST.get("rate")
         if rate:
             newgame=game()
-            newgame.name=request.user.nick_name+timezone.now().strftime("%d%H")
+            newgame.name=request.user.nick_name+timezone.now().strftime("%S")
             newgame.rate=rate
             newgame.save()
             newgameid=newgame.id
@@ -62,58 +47,34 @@ class setgameview(View):
                         insgameplayer.save()
                     except Exception as e:
                         raise e
-
-                else:
-                    msg="没有用户，牌局设置失败！"
-                    players = UserProfile.objects.exclude(is_superuser=True)
-                    return render(request, "sc_card/setgame.html", {"seluser": players, "msg": msg})
-
-            else:
-                msg="牌局建立成功！"
-
-            players = UserProfile.objects.exclude(is_superuser=True)
-            return render(request, "sc_card/setgame.html", {"seluser": players,"msg":msg})
+            return HttpResponseRedirect(reverse('sc_card:index'))
         else:
-            msg = "牌局建立失败！"
+            msg = "没有牌局,或者牌局建立失败！建立牌局"
             players = UserProfile.objects.exclude(is_superuser=True)
             return render(request, "sc_card/setgame.html", {"seluser": players,"msg":msg})
 
 @method_decorator(login_required, name='dispatch')
 class game_detailview(View):
     def get(self, request,id):
-            my_form=account()
+            this_game=game.objects.get(id=id)
+            plyers=gamepalyers.objects.filter(game_id=id)
             gamedetail=gamedetails.objects.filter(game_id=id)
-            return render(request, "sc_card/game_detail.html",{"f":my_form,"gamedetail":gamedetail})
+            return render(request, "sc_card/game_detail.html",{"game_detail":gamedetail,"this_game":this_game})
 
+    def post(self, request,id):
+        score = request.POST.get("score","")
+        game_id=id
+        winner=request.POST.get("winner","")
 
+        loser1=request.POST.getlist("loser",[])
 
-    def post(self, request):
-        rate = request.POST.get("rate")
-        if rate:
-            mygame=game()
-            mygame.name=request.user.nick_name
-            mygame.rate=rate
-            mygame.save()
-            gameid=mygame.id
-            get_player = request.POST.get("player").split(',')
+        # loser2=request.POST("loser","")
 
-            for i in get_player:
-                insgameplayer = gamepalyers()
-                insgameplayer.game=game.objects.get(id=gameid)
-                insgameplayer.player=UserProfile.objects.get(id=i)
-                insgameplayer.save()
-            return HttpResponse("设置成功！")
+        if score:
+            this_game = game.objects.get(id=id)
+            gamedetail = gamedetails.objects.filter(game_id=id)
+            return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
         else:
-            bookdata = booking(request.POST)
-            if bookdata.is_valid():
-                # 保存数据
-                bookdata.save()
-                mygame = game.objects.filter(ischeck=False)
-                my_form = account()
-                gamedetail = gamedetails.objects.all()
-                return render(request, "sc_card/index.html",{"current_game": mygame, "f": my_form, "gamedetail": gamedetail})
-            else:
-                mygame = game.objects.filter(ischeck=False)
-                my_form = account()
-                gamedetail = gamedetails.objects.all()
-                return render(request, "sc_card/index.html",{"current_game": mygame, "f": my_form, "gamedetail": gamedetail})
+            this_game = game.objects.get(id=id)
+            gamedetail = gamedetails.objects.filter(game_id=id)
+            return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
