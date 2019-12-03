@@ -86,7 +86,7 @@
                         <td>{{ i.gamewinner }}</td>
                         <td>{{ i.gameloser1 }}</td>
                         <td>{{ i.gameloser2 }}</td>
-                        <td><a href="{% url 'sc_card:game_detail' i.game_id %}">删除</a></td>
+                        <td><a href="{% url 'sc_card:del_gamedetail' i.id%}">删除</a></td>
                     </tr>
                 {% endfor %}
 

@@ -93,20 +93,7 @@ class game_detailview(View):
             gamedetail = gamedetails.objects.filter(game_id=id)
             return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
 
+def del_gamedetail(request,id):
+    gamedetails.objects.filter(id=id).delete()
+    return HttpResponseRedirect(reverse('sc_card:index'))
 
-
-
-
-
-
-
-        # loser2=request.POST("loser","")
-
-        if score:
-            this_game = game.objects.get(id=id)
-            gamedetail = gamedetails.objects.filter(game_id=id)
-            return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
-        else:
-            this_game = game.objects.get(id=id)
-            gamedetail = gamedetails.objects.filter(game_id=id)
-            return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
