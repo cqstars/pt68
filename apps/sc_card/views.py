@@ -57,16 +57,48 @@ class setgameview(View):
 class game_detailview(View):
     def get(self, request,id):
             this_game=game.objects.get(id=id)
-            plyers=gamepalyers.objects.filter(game_id=id)
             gamedetail=gamedetails.objects.filter(game_id=id)
             return render(request, "sc_card/game_detail.html",{"game_detail":gamedetail,"this_game":this_game})
 
     def post(self, request,id):
         score = request.POST.get("score","")
-        game_id=id
-        winner=request.POST.get("winner","")
+        players=gamepalyers.objects.filter(game_id=id)
+        if players.count() > 3 :
+            winner=request.POST.get("winner","")
+            loser1=request.POST.getlist("loser",[])[0]
+            loser2=request.POST.getlist("loser",[])[1]
+            new_gamedetail=gamedetails()
+            new_gamedetail.game=game.objects.get(id=id)
+            new_gamedetail.gamewinner=UserProfile.objects.get(id=winner)
+            new_gamedetail.gameloser1=UserProfile.objects.get(id=loser1)
+            new_gamedetail.gameloser2=UserProfile.objects.get(id=loser2)
+            new_gamedetail.score=score
+            new_gamedetail.save()
+            this_game = game.objects.get(id=id)
+            gamedetail = gamedetails.objects.filter(game_id=id)
+            return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
+        else:
+            winner = request.POST.get("winner", "")
+            p=players.exclude(player_id=winner)
+            loser1 = p[0].player_id
+            loser2 = p[1].player_id
+            new_gamedetail = gamedetails()
+            new_gamedetail.game = game.objects.get(id=id)
+            new_gamedetail.gamewinner = UserProfile.objects.get(id=winner)
+            new_gamedetail.gameloser1 = UserProfile.objects.get(id=loser1)
+            new_gamedetail.gameloser2 = UserProfile.objects.get(id=loser2)
+            new_gamedetail.score = score
+            new_gamedetail.save()
+            this_game = game.objects.get(id=id)
+            gamedetail = gamedetails.objects.filter(game_id=id)
+            return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
 
-        loser1=request.POST.getlist("loser",[])
+
+
+
+
+
+
 
         # loser2=request.POST("loser","")
 

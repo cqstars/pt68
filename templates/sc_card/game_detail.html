@@ -12,47 +12,55 @@
 {% endblock %}
 {% block content %}
     <div class="content_flex">
-        {{ this_game.name }}{{ this_game.rate }}{{ this_game.ischeck }}
-        {% for p in this_game.get_gamepalyers %}
-            {{ p.player.nick_name }}
-        {% endfor %}
+        <div><strong style="color: #db192a">牌局名称：</strong> <span
+                style="font-size: 0.8em;font-style: italic">{{ this_game.name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div><strong style="color: #db192a">翻数大小：</strong> <span
+                style="font-size: 0.8em;font-style: italic">{{ this_game.rate }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div><strong style="color: #db192a">参加选手：</strong>{% for p in this_game.get_gamepalyers %}
+            <span style="font-size: 0.8em;font-style: italic">★{{ p.player.nick_name }}</span>
+        {% endfor %}</div>
+
+
     </div>
 
 
     <div class="content_flex">
-        <form action="{% url 'sc_card:game_detail' this_game.id %}" method="POST" onsubmit="return checkForm()">
+        <form action="{% url 'sc_card:game_detail' this_game.id %}" method="POST" onsubmit="return checkForm()"
+              name="frm">
             {% csrf_token %}
-            <div>
-                <input type="hidden" name="gameid" value="{{ this_game.id }}">
-            </div>
 
             <div>
 
                 <strong>获胜选手:</strong>
                 {% for p in this_game.get_gamepalyers %}
-                    <input type="radio" name="winner" value="{{ p.id }}"/>
+                    <input type="radio" name="winner" value="{{ p.player.id }}"/>
                     {{ p.player.nick_name }}
                 {% endfor %}
 
             </div>
             <div>
                 <strong>赢几番:</strong>
-                <input type="text" name="score">
+                <input type="text" name="score" value="0.5">
 
             </div>
             <div>
 
-                {% if this_game.get_gamepalyers %}
+
+                {% if this_game.get_gamepalyers.count > 3 %}
                     <strong>失败选手:</strong>
 
                     {% for p in this_game.get_gamepalyers %}
-                        <input type="checkbox" name="loser" value="{{ p.id }}"/>
+                        <input type="checkbox" name="loser" value="{{ p.player.id }}"/>
                         {{ p.player.nick_name }}
                     {% endfor %}
-
-                    </div>
+                {% else %}
+                    {% for p in this_game.get_gamepalyers %}
+                        <input type="checkbox" name="loser" value="{{ p.player.id }}" style="display:none;"/>
+                    {% endfor %}
                 {% endif %}
-
+            </div>
 
             <input type="submit" value="提交" class="btn">
         </form>
@@ -60,22 +68,25 @@
     <strong>牌局明细情况</strong>
     <div class="content_flex">
         {% if game_detail %}
-            <table width="100%" border="1" cellspacing="1"
-                   style="text-align: center;font-size: 0.8em;border-collapse:collapse">
+            <table width="100%" border="1" cellspacing="2"
+                   style="text-align: center;font-size: 1em;border-collapse:collapse">
                 <tr>
                     <th>时间</th>
                     <th>翻数</th>
                     <th>赢</th>
                     <th>输</th>
                     <th>输</th>
+                    <th>删除</th>
                 </tr>
-                {% for i in game_detail %}
+
+                {% for i in  game_detail %}
                     <tr>
                         <td>{{ i.add_time|date:'h时m分' }}</td>
                         <td>{{ i.score }}</td>
                         <td>{{ i.gamewinner }}</td>
                         <td>{{ i.gameloser1 }}</td>
                         <td>{{ i.gameloser2 }}</td>
+                        <td><a href="{% url 'sc_card:game_detail' i.game_id %}">删除</a></td>
                     </tr>
                 {% endfor %}
 
@@ -93,8 +104,44 @@
 {% block js %}
     <script type="text/javascript">
         function checkForm() {
-            alert("ok")
 
+            var winner = frm.winner.value;
+            if (winner == "") {
+                alert("选取获胜选手");
+                return false;
+            }
+
+            var score = frm.score.value;
+            if (score == "") {
+                alert("输入翻数");
+                return false;
+            }
+            obj = document.getElementsByName("loser");
+            var longtxt = 0;
+            if (obj.length == 3) {
+                 for (k in obj){
+                     if(obj[k].value!=winner)
+                     {
+                         obj[k].checked=true;
+                     }
+                 }
+            }
+            else {
+                for (k in obj) {
+                    if (obj[k].checked) {
+                        longtxt++;
+                        if (obj[k].value == winner) {
+                            alert("输家与赢家是相同选手");
+                            return false;
+                        }
+                    }
+                }
+                if (longtxt != 2) {
+                    alert("输家选手必须是两位");
+                    return false;
+                }
+            }
+            return true;
         }
     </script>
 {% endblock %}
