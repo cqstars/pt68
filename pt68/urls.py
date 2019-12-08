@@ -19,7 +19,8 @@ from django.urls import path, re_path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name="index.html"), name="index"),
+    # path('', TemplateView.as_view(template_name="pc.html"), name="index"),
+    path('', include('index.urls', 'index')),
     path('users/', include('users.urls', 'users')),
     path('sc_card/', include('sc_card.urls', 'sc_card')),
 ]

@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <script src="//at.alicdn.com/t/font_398012_pbpu0xrsd9.js" type="text/javascript"></script>
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+<div id="top">
+    <ul class="nav" style="padding: 1px 20px 8px; ">
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-guoxue"></use>
+        </svg>
+
+    </ul>
+    <ul class="nav">
+        <a href="#"><i class="iconfont" >&#xe675;</i>诗词</a>
+        <ul class="plat">
+            <li><a href="#">
+               <i class="iconfont" >&#xe675;</i> 先秦
+                </a></li>
+            <li><a href="#">汉赋</a></li>
+            <li><a href="#">唐诗</a></li>
+            <li><a href="#">宋词</a></li>
+        </ul>
+    </ul>
+    <ul class="nav">
+        <a href="#">文学</a>
+        {#    <ul class="plat">#}
+        {#        <li><a href="#">金瓶梅</a></li>#}
+        {#        <li><a href="#">纳兰若兰</a></li>#}
+        {##}
+        {#    </ul>#}
+    </ul>
+    <ul class="nav">
+        <a href="#">电影</a>
+        {#    <ul class="plat">#}
+        {#        <li><a href="#">欧美</a></li>#}
+        {#        <li><a href="#">中国</a></li>#}
+        {#        <li><a href="#">日韩</a></li>#}
+        {#    </ul>#}
+    </ul>
+    <ul class="nav">
+        <a href="#">联系我们</a>
+
+    </ul>
+    <ul class="nav" style="padding: 1px 20px 8px; ">
+        <form>
+            <input type="text" name="search"><input type="submit" value="搜"></form>
+    </ul>
+</div>
+
+<!----
+<div id="top">
+    <ul style="float: left">
+        <img src="{% static 'img/logo/logo_little.png' %}" style="align-items: center;">
+        <li style="align-items: center;line-height: 1em;">
+            <h2>圣天国学</h2>
+            <p style="font-size: 0.6em">Saint Sky Ancient Chinese Literature Search</p>
+        </li>
+
+        <li>
+            <form action="" method="get">
+                <input type="text" name="Q">
+                <input type="submit"
+                       style="cursor: pointer;width: 50px;border-radius: 1px;box-shadow: 1px 1px 2px 3px #efefef"
+                       value="搜">
+
+            </form>
+        </li>
+        <li>
+            <svg class="icon t red" aria-hidden="true">
+                <use xlink:href="#iconkefurexian"></use>
+            </svg>
+            热线：15310167836
+        </li>
+        <li style="font-size: 10px;color: #a99e9e">
+            <a href="{% url 'users:index' %}">
+                <svg class="icon t" aria-hidden="true">
+                    <use xlink:href="#iconzhuce"></use>
+                </svg>
+                用户注册</a>
+            <a href="{% url 'users:index' %}">
+                <svg class="icon t" aria-hidden="true">
+                    <use xlink:href="#iconyonghudenglu"></use>
+                </svg>
+                用户登录</a>
+
+        </li>
+    </ul>
+</div>
+
+
+<div class="clearfix"></div>
+
+
+<div id="nav">
+    <ul style="float: left">
+        <li><a href="">
+            <svg class="icon t" aria-hidden="true">
+                <use xlink:href="#iconshouye"></use>
+            </svg>
+            首页</a></li>
+        <li><a href="">
+            <svg class="icon t" aria-hidden="true">
+                <use xlink:href="#icongd"></use>
+            </svg>
+            公司简介</a></li>
+
+
+    </ul>
+
+</div>
+----->
+<div class=" breadcrumb clearfix">
+
+    {% block breadcrumb %}
+    {% endblock %}
+
+</div>
+<div>
+    {% block content %}
+    {% endblock %}
+</div>
+
+<footer>
+    <div class="footer">
+        <ul>
+            <li>
+                <svg class="icon txt_red" aria-hidden="true">
+                    <use xlink:href="#icongd"></use>
+                </svg>
+                圣天国学
+            </li>
+            <li>
+                <svg class="icon t" aria-hidden="true">
+                    <use xlink:href="#iconshouji"></use>
+                </svg>
+                联系人：彭先生 &nbsp;&nbsp;&nbsp;&nbsp;手机：15310167836&nbsp;&nbsp;&nbsp;&nbsp;
+            </li>
+            <li>
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icondianhua"></use>
+                </svg>
+                电话：023-6869 0301 &nbsp;&nbsp;&nbsp;&nbsp; 传真：023-6863 2077
+                <svg class="icon txt_blue" aria-hidden="true">
+                    <use xlink:href="#iconyoujian1"></use>
+                </svg>
+                <a href="mailto:#">15266320@qq.com</a>
+            </li>
+            <li>
+                <svg class="icon " aria-hidden="true">
+                    <use xlink:href="#icondizhi1"></use>
+                </svg>
+                地址：重庆九龙坡区重庆市石桥铺西部商城B14-10
+            </li>
+
+        </ul>
+        <ul>
+            <li style="list-style: none;text-align: center">
+                <svg class="icon " aria-hidden="true">
+                    <use xlink:href="#icon-ICPbeian"></use>
+                </svg>
+                <a href="http://www.beian.miit.gov.cn/">渝ICP备19014125号-2</a></li>
+        </ul>
+    </div>
+</footer>
+
+{% block js %}
+{% endblock %}
+</body>
+</html>

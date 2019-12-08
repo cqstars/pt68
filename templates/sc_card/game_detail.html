@@ -19,7 +19,7 @@
                 style="font-size: 0.8em;font-style: italic">{{ this_game.rate }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
         <div><strong style="color: #db192a">参加选手：</strong>{% for p in this_game.get_gamepalyers %}
-            <span style="font-size: 0.8em;font-style: italic">★{{ p.player.nick_name }}</span>
+            <span class="player" style="font-size: 0.8em;font-style: italic">{{ p.player.nick_name }}</span>
         {% endfor %}</div>
 
 
@@ -65,10 +65,10 @@
             <input type="submit" value="提交" class="btn">
         </form>
     </div>
-    <strong>牌局明细情况</strong>
+    <strong>牌局明细情况</strong><span onclick="huizong()" style="cursor: pointer">汇总</span>
     <div class="content_flex">
         {% if game_detail %}
-            <table width="100%" border="1" cellspacing="2"
+            <table id="detail" width="100%" border="1" cellspacing="2"
                    style="text-align: center;font-size: 1em;border-collapse:collapse">
                 <tr>
                     <th>时间</th>
@@ -86,7 +86,7 @@
                         <td>{{ i.gamewinner }}</td>
                         <td>{{ i.gameloser1 }}</td>
                         <td>{{ i.gameloser2 }}</td>
-                        <td><a href="{% url 'sc_card:del_gamedetail' i.id%}">删除</a></td>
+                        <td><a href="{% url 'sc_card:del_gamedetail' i.id %}">删除</a></td>
                     </tr>
                 {% endfor %}
 
@@ -95,13 +95,11 @@
             <div class="errorlist">还没有开始</div>
         {% endif %}
 
-
     </div>
-
-
-
+    <div class="content_flex" id="result"></div>
 {% endblock %}
 {% block js %}
+    <script type="text/javascript" src="{% static 'js/maths.js' %}"></script>
     <script type="text/javascript">
         function checkForm() {
 
@@ -119,12 +117,11 @@
             obj = document.getElementsByName("loser");
             var longtxt = 0;
             if (obj.length == 3) {
-                 for (k in obj){
-                     if(obj[k].value!=winner)
-                     {
-                         obj[k].checked=true;
-                     }
-                 }
+                for (k in obj) {
+                    if (obj[k].value != winner) {
+                        obj[k].checked = true;
+                    }
+                }
             }
             else {
                 for (k in obj) {
@@ -143,5 +140,44 @@
             }
             return true;
         }
+    </script>
+    <script type="text/javascript">
+        //计算汇总
+        function huizong() {
+            var rate ={{ this_game.rate }};
+            players = new Array();
+            var els = document.querySelectorAll(".player");
+            for (i = 0; i < els.length; i++) {
+                var p = new Object();
+                p.nick_name = els[i].innerHTML;
+                p.score = 0;
+                players[i] = p;
+            }
+
+
+            var detail = document.querySelector("#detail").rows;
+            for (i = 1; i < detail.length; i++) {
+                for (j = 0; j < players.length; j++) {
+                    if (detail[i].cells[2].innerHTML == players[j].nick_name) {
+                        players[j].score = Number(players[j].score).add(Number(detail[i].cells[1].innerHTML).mul(rate).mul(2.0));
+                    }
+                    if (detail[i].cells[3].innerHTML == players[j].nick_name) {
+                        players[j].score = Number(players[j].score).sub(Number(detail[i].cells[1].innerHTML).mul(rate));
+                    }
+                    if (detail[i].cells[4].innerHTML == players[j].nick_name) {
+                        players[j].score = Number(players[j].score).sub(Number(detail[i].cells[1].innerHTML).mul(rate));
+                    }
+                }
+
+            }
+            var result = "";
+            for (k = 0; k < players.length; k++) {
+                result += '<strong>'+players[k].nick_name + '</strong>:' + players[k].score+'&nbsp;&nbsp;&nbsp;';
+
+            }
+            document.getElementById("result").innerHTML = result;
+        }
+
+
     </script>
 {% endblock %}
