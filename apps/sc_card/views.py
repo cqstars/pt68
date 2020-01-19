@@ -23,7 +23,18 @@ class indexview(View):
         mygame = game.objects.filter(ischeck=False)
         return render(request, "sc_card/index.html", {"current_game": mygame})
 
+@method_decorator(login_required, name='dispatch')
+class inqueryview(View):
+    def get(self, request):
+        mygame=game.objects.order_by("-add_time")
+        return render(request, "sc_card/inquery.html",{"current_game":mygame})
 
+    def post(self, request):
+        pass
+        # id = request.POST.get("id","")
+        # game.objects.filter(id=id).update(ischeck=True)
+        # mygame = game.objects.filter(ischeck=False)
+        # return render(request, "sc_card/index.html", {"current_game": mygame})
 
 @method_decorator(login_required, name='dispatch')
 class setgameview(View):
@@ -34,7 +45,7 @@ class setgameview(View):
         rate = request.POST.get("rate")
         if rate:
             newgame=game()
-            newgame.name=request.user.nick_name+timezone.now().strftime("%S")
+            newgame.name=timezone.now().strftime('%Y-%m-%d')
             newgame.rate=rate
             newgame.save()
             newgameid=newgame.id
@@ -57,7 +68,7 @@ class setgameview(View):
 class game_detailview(View):
     def get(self, request,id):
             this_game=game.objects.get(id=id)
-            gamedetail=gamedetails.objects.filter(game_id=id)
+            gamedetail=gamedetails.objects.filter(game_id=id).order_by("-id")
             return render(request, "sc_card/game_detail.html",{"game_detail":gamedetail,"this_game":this_game})
 
     def post(self, request,id):
@@ -75,7 +86,7 @@ class game_detailview(View):
             new_gamedetail.score=score
             new_gamedetail.save()
             this_game = game.objects.get(id=id)
-            gamedetail = gamedetails.objects.filter(game_id=id)
+            gamedetail = gamedetails.objects.filter(game_id=id).order_by("-id")
             return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
         else:
             winner = request.POST.get("winner", "")
@@ -90,8 +101,14 @@ class game_detailview(View):
             new_gamedetail.score = score
             new_gamedetail.save()
             this_game = game.objects.get(id=id)
-            gamedetail = gamedetails.objects.filter(game_id=id)
+            gamedetail = gamedetails.objects.filter(game_id=id).order_by("-id")
             return render(request, "sc_card/game_detail.html", {"game_detail": gamedetail, "this_game": this_game})
+
+class inquery_detailview(View):
+    def get(self, request,id):
+            this_game=game.objects.get(id=id)
+            gamedetail=gamedetails.objects.filter(game_id=id).order_by("-id")
+            return render(request, "sc_card/inquerydetail.html",{"game_detail":gamedetail,"this_game":this_game})
 
 def del_gamedetail(request,id):
     gamedetails.objects.filter(id=id).delete()

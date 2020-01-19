@@ -1,12 +1,19 @@
 {% extends "Base.html" %}
 {% load static %}
-{% block title %}{{ this_game.name }}{% endblock %}
+{% block title %}{{ this_game }}{% endblock %}
 {% block css %}
 {% endblock %}
 {% block breadcrumb %}
+    {% if request.user.is_authenticated %}
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-yonghudenglu"></use>
+        </svg>{{ user.username }} <strong>用户</strong><span style="color: #ff00ff">{{ user.nick_name }}</span>
+        登录{% endif %}
+{% endblock %}
+{% block content %}
     <div class="content_flex">
-        <div><strong style="color: #db192a">开牌时间：</strong> <span
-                style="font-size: 0.8em;font-style: italic">{{ this_game.add_time|date:"Y-m-d h:i" }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+        <div><strong style="color: #db192a">牌局名称：</strong> <span
+                style="font-size: 0.8em;font-style: italic">{{ this_game.name }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
         <div><strong style="color: #db192a">翻数大小：</strong> <span
                 style="font-size: 0.8em;font-style: italic">{{ this_game.rate }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -16,43 +23,9 @@
         {% endfor %}</div>
 
     </div>
-{% endblock %}
-{% block content %}
-    <div class="content_flex">
-        <form action="{% url 'sc_card:game_detail' this_game.id %}" method="POST" onsubmit="return checkForm()"
-              name="frm">
-            {% csrf_token %}
 
-            <div>
 
-                <strong>获胜选手:</strong>
-                {% for p in this_game.get_gamepalyers %}
-                    <input type="radio" name="winner" value="{{ p.player.id }}"/>
-                    {{ p.player.nick_name }}
-                {% endfor %}
 
-            </div>
-            <div>
-                {% if this_game.get_gamepalyers.count > 3 %}
-                    <strong>失败选手:</strong>
-
-                    {% for p in this_game.get_gamepalyers %}
-                        <input type="checkbox" name="loser" value="{{ p.player.id }}"/>
-                        {{ p.player.nick_name }}
-                    {% endfor %}
-                {% else %}
-                    {% for p in this_game.get_gamepalyers %}
-                        <input type="checkbox" name="loser" value="{{ p.player.id }}" style="display:none;"/>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <div>
-                <strong>赢几番:</strong>
-                <input type="text" name="score" value="" style="width: 100px">
-                <input type="submit" value="提交" class="btn">
-            </div>
-        </form>
-    </div>
     <strong>明细</strong><span id="result"></span>
     <div class="content_flex">
         {% if game_detail %}
@@ -64,7 +37,7 @@
                     <th>赢</th>
                     <th>输</th>
                     <th>输</th>
-                    <th>删除</th>
+                    <th>★</th>
                 </tr>
 
                 {% for i in  game_detail %}
@@ -74,7 +47,7 @@
                         <td>{{ i.gamewinner }}</td>
                         <td>{{ i.gameloser1 }}</td>
                         <td>{{ i.gameloser2 }}</td>
-                        <td><a href="{% url 'sc_card:del_gamedetail' i.id %}" onclick="javascript:return del(this)">删除</a></td>
+                        <td><a href="#">☺</a></td>
                     </tr>
                 {% endfor %}
 
@@ -173,20 +146,4 @@
 
 
     </script>
-     <script>
-              function del(e) {
-                  
-                  var sel_del_tr=e.parentNode.parentNode;
-                  var t=sel_del_tr.cells[0].innerHTML;
-                  var rate=sel_del_tr.cells[1].innerHTML;
-                  var winner=sel_del_tr.cells[2].innerHTML;
-
-                  if(confirm("确实要删除"+winner+"在"+t+"赢得的"+rate+"翻吗？")){
-                      return true;
-                  }else {
-                    return false;
-                  }
-
-              }
-          </script>
 {% endblock %}
