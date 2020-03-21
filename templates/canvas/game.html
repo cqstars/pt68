@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    <style>
+
+        canvas {
+            border: 1px solid gray;
+        }
+    </style>
+</head>
+<body>
+<canvas  id="mycanvas" width="600" height="400"></canvas>
+<script type="text/javascript">
+    var mycanvas = document.getElementById("mycanvas");
+    var ctx = mycanvas.getContext("2d");
+    var myimg=new Image();
+    myimg.src="{% static 'img/game/1.png' %}";
+    myimg.onload=function () {
+        ctx.drawImage(myimg,0,0,30,44,10,10,30,44);
+    }
+
+
+
+</script>
+</body>
+</html>

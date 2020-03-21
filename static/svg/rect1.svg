@@ -1,0 +1,28 @@
+<?xml version="1.0"  standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="100%" height="100%" version="1.1"
+xmlns="http://www.w3.org/2000/svg">
+
+<rect width="300" height="100"
+style="fill:rgb(0,0,255);stroke-width:1;
+stroke:rgb(0,0,0)"/>
+
+</svg>
+
+<svg width="580" height="400" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+
+  <rect fill="#fff" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+
+  <text stroke="#000" transform="matrix(3.023419141769409,0,0,3.023419141769409,-573.2915515266359,-408.73066663742065) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_1" y="199.31526" x="278.20371" stroke-width="0" fill="#000000">1</text>
+  <ellipse ry="4.5" rx="4.5" id="svg_2" cy="212.5" cx="290" stroke-width="1.5" stroke="#000" fill="#000000"/>
+ </g>
+</svg>

@@ -1,0 +1,378 @@
+{% extends "jp/jpBase.html" %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block css %}
+    <style>
+        /*遮罩层样式*/
+
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.6;
+            opacity: .60;
+            filter: alpha(opacity=60);
+        }
+
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jp.css' %}">
+{% endblock %}
+{% block breadcrumb %}
+{% endblock %}
+{% block content %}
+    <div id="light" class="box">
+        <div class="box_title">
+            <ul>
+                <li style="float: right"><a href="javascript:void(0)" onclick="two()">×</a></li>
+            </ul>
+        </div>
+
+        <!--
+                <a onclick="size()">设置成说手机窗口</a>
+        -->
+        <div class="box_content">
+            <ul style="border-bottom: 1px dotted #363636">
+                <li style="border-bottom: 1px solid #ff0000"><strong>
+                    <svg class="icon t" aria-hidden="true">
+                        <use xlink:href="#icontiaohao"></use>
+                    </svg>
+                    歌曲设置:</strong></li>
+            </ul>
+            <ul>
+                <li>
+                    歌名:&nbsp;<input type="text" name="songname" value=""></li>
+                <li>
+                    作曲: <input type="text" name="composing" value=""></li>
+                <li>
+                </li>
+                作词：<input type="text" name="lyrics" value="">
+                <li>
+                    演唱：<input type="text" name="singer" value="">
+                </li>
+            </ul>
+            <ul>
+
+
+                <li>调号：<input type="text" name="tonemark" value=""></li>
+
+                <li>附加调号：<input type="text" name="addtonemark" value=""></li>
+
+
+                <li>速度表情：<input type="text" name="singspeed" value=""></li>
+
+            </ul>
+            <ul>
+                <li>拍号：<input type="text" name="timesignature" value=""></li>
+
+                <li>附加拍号1：<input type="text" name="addtimesignature1" value=""></li>
+
+                <li>附加拍号2：<input type="text" name="addtimesignature2" value=""></li>
+
+            </ul>
+
+
+            <ul style="border-bottom: 1px dotted #363636">
+                <li style="border-bottom: 1px solid #ff0000"><strong>
+                    <svg class="icon t" aria-hidden="true">
+                        <use xlink:href="#iconshezhi"></use>
+                    </svg>
+                    页面设置:</strong></li>
+
+            </ul>
+            <ul style="border-bottom: 1px dotted #363636">
+                <li>画布宽：<input type="text" name="input_svg_edit_width" value="1080"></li>
+                <li>画布高：<input type="text" name="input_svg_edit_height" value="800"></li>
+                <li>字体大小：<input type="text" name="input_svg_editor_fontsize" value="30"></li>
+            </ul>
+            <ul>
+                <li>
+                    <div class="btn" onclick="page_setup()">确定</div>
+                </li>
+                <li>
+                    <div class="btn" onclick="two()">取消</div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div id="fade" class="black_overlay">
+
+    </div>
+    <h2 style="text-align: center">简谱编辑</h2>
+    <div class="wrapper">
+        <div class="btn" href="javascript:void(0)" onclick="one()">
+            页面设置
+        </div>
+        <div class="btn" id="insert" onclick="displaygrid()">
+            显示网格
+        </div>
+        {#        <div class="animation" id="cursor"></div>#}
+
+    </div>
+
+    <div class="wrapper" style="">
+        <div id="jp" style="width: 1080px;height:800px;">
+            <svg id="jpsvg" version="1.1" width="1080" height="800" viewBox="0 0 1080 800"
+                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <defs>
+                    <g id="mycursor">
+                        <path d="M5,5 V30" fill="none" stroke="#000000" STROKE-WIDTH="1">
+                            <animate attributeName="opacity" from="1" to="0.2" begin="0.2s" dur="0.8s"
+                                     repeatCount="indefinite"/>
+                        </path>
+                    </g>
+
+                    <g id="alto6">
+                    </g>
+                    <linearGradient id="a1">
+                        <stop offset="5%" stop-color="#F00"/>
+                        <stop offset="95%" stop-color="#ff0"/>
+                    </linearGradient>
+                    <path id="a1" d="M0 50 C150 150 100 -50 300 50" stroke="#000" fill="none"/>
+                    <mask id="mask1">
+                        <rect x="50" y="50" width="100" height="100" fill="#ccc"/>
+                        <rect x="150" y="150" width="50" height="50" fill="#fff"/>
+                    </mask>
+                    <filter width="200" height="200" x="0" y="0" id="blur" filterUnits="userSpaceOnUse">
+                        <feGaussianBlur stdDeviation="5"/>
+                    </filter>
+
+                </defs>
+
+                <!--<use xlink:href="#mycursor" x="40" y="100"></use>
+                <text x="400" y="35" fill="black" font-size="35" text-anchor="middle" dominant-baseline="middle">忘情水
+                </text>
+                <text x="10" y="75" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">1=F4/4
+                </text>
+                <text x="600" y="75" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">词：陈安秀
+                </text>
+                <text x="600" y="105" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">
+                    曲：彭涛
+                </text>
+
+
+                <text x="10" y="150" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">5</text>
+                <text x="10" y="165" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">.</text>
+                <text x="40" y="165" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">.</text>
+                <text x="70" y="165" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">.</text>
+                <text x="100" y="165" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">.</text>
+                <text x="40" y="150" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">5</text>
+                <text x="70" y="150" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">5</text>
+                <text x="100" y="150" fill="black" font-size="20" text-anchor="left" dominant-baseline="middle">5</text>
+                <path d="M10,160 H110" fill="none" stroke="black" stroke-width="1"></path>
+                <path d="M10,163 H110" fill="none" stroke="black" stroke-width="1"></path>
+                <use xlink:href="#mycursor" x="10" y="20"></use>-->
+
+            </svg>
+
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
+{% block js %}
+
+    <script type="text/javascript">
+        //浏览器宽高
+        var w = document.documentElement.clientWidth || document.body.clientWidth;
+        var h = document.documentElement.clientHeight || document.body.clientHeight;
+        var jpeditor = document.querySelector("#jp");
+        var jpsvg = document.getElementById("jpsvg");
+        ;
+        //是否显示网格线
+
+
+        var jpeditorAttr = {
+            "width": 1080,
+            "height": 800,
+            "fontsize": 30,
+            "songname": "",
+            "composing": "",
+            "lyrics": "",
+            "singer": "", "tonemark": "", "addtonemark": "",
+            "singspeed": "", "timesignatur": "", "addtimesignature1": "", "ddtimesignature2": "",
+            "cells": [],
+            "grids": new Array(),
+            "CrrentCell": null,
+             "isdisplaygrid":false,
+            "CreatGrids": function () {
+                this.grids.length = 0;
+                for (var i = 0; i < jpeditorAttr.height / jpeditorAttr.fontsize; i++) {
+                    this.grids[i] = new Array();
+                    for (var j = 0; j < parseInt(jpeditorAttr.width / jpeditorAttr.fontsize); j++) {
+                        this.grids[i][j] = new Cell(i, j, j * jpeditorAttr.fontsize, i * jpeditorAttr.fontsize);
+                    }
+                }
+            }
+
+        };
+
+        function Cell(row, column, x, y) {
+            this.row = row;
+            this.column = column;
+            this.x = x;
+            this.y = y;
+            jpeditorAttr.cells.push(this);
+        }
+
+        Cell.prototype.Cursor = function () {
+            if (document.querySelectorAll("use[Tagname='CurrentCursor']").length > 0) {
+                jpsvg.removeChild(document.querySelectorAll("use[Tagname='CurrentCursor']")[0]);
+                jpsvg.appendChild(CreatDefsUse("#mycursor", {"x": this.x, "y": this.y, "Tagname": "CurrentCursor"}));
+            }
+            else {
+                jpsvg.appendChild(CreatDefsUse("#mycursor", {"x": this.x, "y": this.y, "Tagname": "CurrentCursor"}));
+            }
+        }
+    </script>
+
+    <script type="text/javascript" src="{% static 'js/Creat.js' %}"></script>
+    <script type="text/javascript">
+        //开关设置窗口
+        function one() {
+            document.getElementById('light').style.display = 'block';
+            document.getElementById('fade').style.display = 'block'
+        }
+
+        function two() {
+            document.getElementById('light').style.display = 'none';
+            document.getElementById('fade').style.display = 'none'
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        window.onload = function () {
+            jpeditor.style.width = jpeditor.width;
+            jpeditor.style.height = jpeditor.height;
+            CreatDefs();
+            creatCell();
+            jpeditorAttr.CreatGrids();
+        }
+
+        //页面设置弹窗确定按钮事件
+        function page_setup() {
+            jpeditorAttr.width = document.getElementsByName("input_svg_edit_width")[0].value;
+            jpeditorAttr.height = document.getElementsByName("input_svg_edit_height")[0].value;
+            jpeditorAttr.fontsize = document.getElementsByName("input_svg_editor_fontsize")[0].value;
+            jpeditorAttr.songname = document.getElementsByName("songname")[0].value;
+            jpeditorAttr.composing = document.getElementsByName("composing")[0].value;
+            jpeditorAttr.lyrics = document.getElementsByName("lyrics")[0].value;
+            jpeditorAttr.singer = document.getElementsByName("singer")[0].value;
+            jpeditorAttr.tonemark = document.getElementsByName("tonemark")[0].value;
+            jpeditorAttr.addtonemark = document.getElementsByName("addtonemark")[0].value;
+            jpeditorAttr.singspeed = document.getElementsByName("singspeed")[0].value;
+            jpeditorAttr.timesignatur = document.getElementsByName("timesignature")[0].value;
+            jpeditorAttr.addtimesignature1 = document.getElementsByName("addtimesignature1")[0].value;
+            jpeditorAttr.addtimesignature2 = document.getElementsByName("addtimesignature2")[0].value;
+
+            jpeditor.style.width = jpeditorAttr.width + 'px';
+            jpeditor.style.height = jpeditorAttr.height + 'px';
+            jpeditor.style.fontsize = jpeditorAttr.fontsize + 'px';
+            //svg画布设置
+            jpsvg.setAttribute("width", jpeditorAttr.width);
+            jpsvg.setAttribute("height", jpeditorAttr.height);
+            jpsvg.setAttribute("viewBox", "0 0" + " " + jpeditorAttr.width + " " + jpeditorAttr.height);
+            creatCell();
+            jpeditorAttr.CreatGrids();
+            //输出歌名到svg
+            let txtlocation = parseInt((jpeditorAttr.width / jpeditorAttr.fontsize) / 2, 10);
+            let txtTitle = createTag("text", {
+                "x": jpeditorAttr.cells[txtlocation].x,
+                "y": jpeditorAttr.cells[txtlocation].y + jpeditorAttr.fontsize,
+                "font-size": parseInt(jpeditorAttr.fontsize * 0.8, 10),
+                "fill": "blue",
+                "stroke": "none",
+                "stroke-opacity": "0",
+                "stroke-width": "5.6",
+                "baseline-shift": "baseline",
+                "tagname": "Title"
+            });
+            txtTitle.innerHTML = jpeditorAttr.songname;
+            jpsvg.appendChild(txtTitle);
+
+        }
+
+        //显示网格按钮
+        function displaygrid() {
+
+            if (jpeditorAttr.isdisplaygrid) {
+
+                var selectDom = jpsvg.querySelectorAll("text[tagname='cell']");
+                console.log(selectDom);
+                var newArr = [];
+                for (var i = 0; i < selectDom.length; i++) {
+                    newArr.push(selectDom[i]);
+                }
+                for (var i = 0; i < newArr.length; i++) {
+                    jpsvg.removeChild(newArr[i]);
+                }
+
+               jpeditorAttr.isdisplaygrid= false;
+            }
+
+            else {
+                for (var i in jpeditorAttr.cells) {
+                    var mark = createTag("text", {
+                        "x": jpeditorAttr.cells[i].x,
+                        "y": jpeditorAttr.cells[i].y,
+                        "font-size": 8,
+                        "fill": "blue",
+                        "stroke": "none",
+                        "stroke-opacity": "0",
+                        "stroke-width": "5.6",
+                        "baseline-shift": "baseline",
+                        "tagname": "cell"
+                    });
+
+                    mark.innerHTML = "" + i + "";
+                    jpsvg.appendChild(mark);
+                    jpeditorAttr.isdisplaygrid = true;
+                }
+            }
+        }
+
+
+        //编辑器按钮监控事件插入光标
+        jpeditor.addEventListener("click", function (evt) {
+
+            var evt = event || window.event;//事件兼容性写法
+            //console.log(jpeditorAttr.grids)
+            //jpeditorcursor.clientY = evt.clientY;
+            //jpeditorcursor.clientX = evt.clientX;
+            let k = parseInt((evt.pageX - jpeditor.offsetLeft) / jpeditorAttr.fontsize, 10);
+            let j = parseInt((evt.pageY - jpeditor.offsetTop) / jpeditorAttr.fontsize, 10);
+            var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            /* console.log(scrollTop);
+           console.log("clientx:" + evt.clientX + ",pagex:" + evt.pageX + ",clientY:" + evt.clientY + ",pageY:" + evt.pageY);
+            console.log("offsetWidth:" + jpeditor.offsetWidth + ",offsetHeight:" + jpeditor.offsetHeight);
+            console.log("ClientWidth:" + jpeditor.clientWidth + ",clientHeight:" + jpeditor.clientHeight);
+            console.log("光标位置row:" + (evt.clientX - jpeditor.offsetLeft) + ',光标位置column:' + (evt.clientY - jpeditor.offsetTop));
+            console.log("evt.clientX:" + evt.clientX + ",jpeditor.offsetLeft:" + jpeditor.offsetLeft + ",clientWidth:" + document.documentElement.clientWidth);
+            console.log("evt.clientY :" + evt.clientY + ",jpeditor.offsetTop:" + jpeditor.offsetTop + ",clientHeight:" + document.documentElement.clientHeight);*/
+            // console.log(jpeditorAttr.grids[j][k]);
+            jpeditorAttr.grids[j][k].Cursor();
+            let alto = CreatDefsUse("#alto6", {
+                "x": jpeditorAttr.grids[j][k].x,
+                "y": jpeditorAttr.grids[j][k].y
+            });
+
+            jpsvg.appendChild(alto);
+            jpeditorAttr.CrrentCell = jpeditorAttr.grids[j][k];
+            console.log(jpeditorAttr.CrrentCell);
+
+
+        }, false);
+
+    </script>
+
+{% endblock %}

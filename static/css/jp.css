@@ -1,4 +1,4 @@
-﻿body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
+body, button, input, select, textarea, h1, h2, h3, h4, h5, h6 {
     font-family: "Microsoft Yahei", Arial
 }
 
@@ -56,7 +56,6 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 /*顶部导航*/
 #top {
     margin: 5px;
-
 }
 
 .nav {
@@ -164,18 +163,27 @@ a {
 
 /* 底部样式*/
 .footer {
-    font-size: 0.8em;
-    display: -webkit-flex; /*在webkit内核的浏览器上使用要加前缀*/
-    display: flex; /*将对象作为弹性伸缩盒显示*/
-    justify-content: center;
-    padding: 10px 300px;
-    width: 100%;
-    border-top: 1px solid #bbbbbb;
-    padding-top: 5px;
+    /*display: flex;*/
+    /*display: -webkit-flex;*/
+    /*justify-content: center;*/
+
+}
+
+.footer li {
+    margin: 5px;
 }
 
 .footer ul {
+    font-size: 0.8em;
+    display: -webkit-flex; /*在webkit内核的浏览器上使用要加前缀*/
+    display: flex; /*将对象作为弹性伸缩盒显示*/
+    flex-direction: row;
+    justify-content: center;
     list-style: none;
+    /*  padding: 10px 300px;
+     width: 100%;
+     border-top: 1px solid #bbbbbb;
+     padding-top: 5px;*/
 }
 
 /*---------------------------中间内容区样式-------------------------------------------*/
@@ -189,8 +197,6 @@ a {
     font-size: 0.8em;
     padding: 10px 300px;
 }
-
-
 
 .wrapper {
     margin-top: 2px;
@@ -461,4 +467,134 @@ h6 {
 
 .search ul li {
     list-style: none;
+}
+
+.animation::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 16px;
+    animation: blink 1s infinite steps(1, start)
+}
+
+@keyframes blink {
+    0% {
+        background-color: white;
+    }
+    50% {
+        background-color: black;
+    }
+    100% {
+        background-color: white;
+    }
+}
+
+#cursor {
+    width: 1px;
+}
+
+.box {
+    display: none;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    /* padding: 16px;
+     border: 1px solid orange;*/
+    background-color: white;
+    z-index: 1002;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 3px #666666;
+}
+
+.box_title {
+    width: 100%;
+    padding: 2px 10px 2px 10px;
+    background-image: linear-gradient(#f2f2f2, #e0e0e0);
+}
+
+.box_title ul {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.box_title li {
+    display: inline-block;
+}
+
+.box_content {
+    font-size: 0.8em;
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.box_content ul {
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.box_content ul li {
+    list-style: none;
+    margin: 5PX;
+
+}
+
+.box_content input {
+    border: 1px solid #f7e5f9;
+    border-radius: 3px;
+}
+
+.box_content ul:last-child {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-right: 100px;
+
+}
+
+.song_setup {
+
+}
+
+.song_setup li {
+
+    list-style: none;
+}
+
+.btn {
+    text-shadow: 0px -1px 0px #7a2a1d;
+    -webkit-box-shadow: inset 0px 34px 0px -15px #b54b3a;
+    -moz-box-shadow: inset 0px 34px 0px -15px #b54b3a;
+    box-shadow: inset 0px 34px 0px -15px #b54b3a;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 1em;
+    background: #a73f2d;
+    padding: 6px 12px 6px 12px;
+    border: solid #241d13 1px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    color: #ffffff;
+    background: #b34332;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#jp {
+    margin-top: 2px;
+    /*width: 1650px;
+    height: 800px;
+    padding: 10px 300px;*/
+    border: 1px solid #666666;
+
 }
