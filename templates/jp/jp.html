@@ -26,6 +26,7 @@
 {% block breadcrumb %}
 {% endblock %}
 {% block content %}
+
     <div id="light" class="box">
         <div class="box_title">
             <ul>
@@ -112,13 +113,32 @@
         </div>
         <div class="btn" id="insert" onclick="displaygrid()">
             显示网格
+
         </div>
         {#        <div class="animation" id="cursor"></div>#}
 
     </div>
+    <div class="wrapper">
+        <h3>忘情水</h3>
+    </div>
+    <div class="wrapper">
 
+        <div id="songname" style="width: 100%;padding: 10px 300px;">
+
+            <ul>
+                <il>1=c 4/4</il>
+                <li>作曲：彭韬文</li>
+            </ul>
+
+            <ul>
+                <il>轻快的、慢慢、河伯加快</il>
+                <li>作词：彭韬文</li>
+            </ul>
+        </div>
+    </div>
     <div class="wrapper" style="">
-        <div id="jp" style="width: 1080px;height:800px;">
+
+        <div id="jp" tabindex='-1' style="width: 1080px;height:800px;" onkeydown="jpeditorOnkeyDown()">
             <svg id="jpsvg" version="1.1" width="1080" height="800" viewBox="0 0 1080 800"
                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <defs>
@@ -180,6 +200,8 @@
 
 {% endblock %}
 {% block js %}
+    <script type="text/javascript" src="{% static 'js/keycode.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/svg.min.js' %}"></script>
 
     <script type="text/javascript">
         //浏览器宽高
@@ -202,9 +224,20 @@
             "singspeed": "", "timesignatur": "", "addtimesignature1": "", "ddtimesignature2": "",
             "cells": [],
             "grids": new Array(),
-            "CrrentCell": null,
-             "isdisplaygrid":false,
-            "CreatGrids": function () {
+            "currentgrid": null,
+            "isdisplaygrid": false,
+
+            "init": function () {
+                //设置id=jp的div大小
+                jpeditor.style.width = jpeditorAttr.width + 'px';
+                jpeditor.style.height = jpeditorAttr.height + 'px';
+                jpeditor.style.fontsize = jpeditorAttr.fontsize + 'px';
+                //svg画布设置
+                jpsvg.setAttribute("width", jpeditorAttr.width);
+                jpsvg.setAttribute("height", jpeditorAttr.height);
+                jpsvg.setAttribute("viewBox", "0 0" + " " + jpeditorAttr.width + " " + jpeditorAttr.height);
+                creatCell();
+                //初始化grids,将grids换算成二维数组，同时初始化一个Cell对象
                 this.grids.length = 0;
                 for (var i = 0; i < jpeditorAttr.height / jpeditorAttr.fontsize; i++) {
                     this.grids[i] = new Array();
@@ -212,6 +245,10 @@
                         this.grids[i][j] = new Cell(i, j, j * jpeditorAttr.fontsize, i * jpeditorAttr.fontsize);
                     }
                 }
+                this.currentgrid = this.grids[0][0]
+                this.currentgrid.Cursor();
+                // console.log(this.currentgrid);
+
             }
 
         };
@@ -221,6 +258,7 @@
             this.column = column;
             this.x = x;
             this.y = y;
+            this.tonic=null;
             jpeditorAttr.cells.push(this);
         }
 
@@ -231,6 +269,12 @@
             }
             else {
                 jpsvg.appendChild(CreatDefsUse("#mycursor", {"x": this.x, "y": this.y, "Tagname": "CurrentCursor"}));
+            }
+        }
+        Cell.prototype.show=function () {
+            if(this.tonic)
+            {
+                jpsvg.appendChild(this.tonic);
             }
         }
     </script>
@@ -252,11 +296,7 @@
 
     <script type="text/javascript">
         window.onload = function () {
-            jpeditor.style.width = jpeditor.width;
-            jpeditor.style.height = jpeditor.height;
-            CreatDefs();
-            creatCell();
-            jpeditorAttr.CreatGrids();
+            jpeditorAttr.init();
         }
 
         //页面设置弹窗确定按钮事件
@@ -274,31 +314,7 @@
             jpeditorAttr.timesignatur = document.getElementsByName("timesignature")[0].value;
             jpeditorAttr.addtimesignature1 = document.getElementsByName("addtimesignature1")[0].value;
             jpeditorAttr.addtimesignature2 = document.getElementsByName("addtimesignature2")[0].value;
-
-            jpeditor.style.width = jpeditorAttr.width + 'px';
-            jpeditor.style.height = jpeditorAttr.height + 'px';
-            jpeditor.style.fontsize = jpeditorAttr.fontsize + 'px';
-            //svg画布设置
-            jpsvg.setAttribute("width", jpeditorAttr.width);
-            jpsvg.setAttribute("height", jpeditorAttr.height);
-            jpsvg.setAttribute("viewBox", "0 0" + " " + jpeditorAttr.width + " " + jpeditorAttr.height);
-            creatCell();
-            jpeditorAttr.CreatGrids();
-            //输出歌名到svg
-            let txtlocation = parseInt((jpeditorAttr.width / jpeditorAttr.fontsize) / 2, 10);
-            let txtTitle = createTag("text", {
-                "x": jpeditorAttr.cells[txtlocation].x,
-                "y": jpeditorAttr.cells[txtlocation].y + jpeditorAttr.fontsize,
-                "font-size": parseInt(jpeditorAttr.fontsize * 0.8, 10),
-                "fill": "blue",
-                "stroke": "none",
-                "stroke-opacity": "0",
-                "stroke-width": "5.6",
-                "baseline-shift": "baseline",
-                "tagname": "Title"
-            });
-            txtTitle.innerHTML = jpeditorAttr.songname;
-            jpsvg.appendChild(txtTitle);
+            jpeditorAttr.init();
 
         }
 
@@ -317,7 +333,7 @@
                     jpsvg.removeChild(newArr[i]);
                 }
 
-               jpeditorAttr.isdisplaygrid= false;
+                jpeditorAttr.isdisplaygrid = false;
             }
 
             else {
@@ -341,6 +357,84 @@
             }
         }
 
+        //编辑器键盘事件-----键盘上下左右键
+        function jpeditorOnkeyDown(e) {
+            //console.log(jpeditorAttr.currentgrid);
+            var e = e || window.event;  //标准化事件处理
+            var s = e.type + " " + e.keyCode;  //获取键盘事件类型和按下的值
+            var target = e.target || e.srcElement;
+            let row = jpeditorAttr.currentgrid.row;
+            let col = jpeditorAttr.currentgrid.column;
+            switch (e.keyCode) {  // 获取当前按下键盘键的编码
+                case 37 :  // 按下左箭头键，向左移动5个像素
+                    if (col > 0) {
+                        col -= 1;
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+                    }
+                    else if (col === 0) {
+                        row -= 1;
+                        col = jpeditorAttr.grids[row].length - 1;
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+                    }
+                    else {
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[0][0];
+                    }
+
+
+                    jpeditorAttr.currentgrid.Cursor();
+
+                    break;
+                case 39 :  // 按下右箭头键，向右移动5个像素
+                    if (col < jpeditorAttr.grids[row].length - 1) {
+                        col += 1;
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+                        if (col === jpeditorAttr.grids[row].length - 1) {
+                            row += 1;
+                            col = 0;
+                            jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+                        }
+
+                    }
+                    jpeditorAttr.currentgrid.Cursor();
+                    break;
+                case 38 :  // 按下上箭头键，向上移动5个像素
+                    if (row === 0) {
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+                    }
+                    else {
+                        row -= 1;
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+                    }
+                    jpeditorAttr.currentgrid.Cursor();
+                    break;
+                case 40 :  // 按下下箭头键，向下移动5个像素
+                    if (row === jpeditorAttr.grids.length - 1) {
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+
+                    }
+                    else {
+                        row += 1;
+                        jpeditorAttr.currentgrid = jpeditorAttr.grids[row][col];
+                    }
+
+                    jpeditorAttr.currentgrid.Cursor();
+                    break;
+                default:
+                    //console.log(keyencode[e.keyCode]);
+                    //console.log(row, col);
+                    var txt = createTag("text", {"x":jpeditorAttr.currentgrid.x, "y": jpeditorAttr.currentgrid.y+jpeditorAttr.fontsize, "stroke": "black"});
+                    txt.innerHTML = keyencode[e.keyCode];
+                    jpeditorAttr.currentgrid.tonic=txt;
+                    console.log(jpeditorAttr.currentgrid.tonic);
+                    jpeditorAttr.currentgrid.show();
+
+                   // jpsvg.appendChild(txt);
+                    break;
+            }
+            return false
+
+
+        }
 
         //编辑器按钮监控事件插入光标
         jpeditor.addEventListener("click", function (evt) {
@@ -367,11 +461,12 @@
             });
 
             jpsvg.appendChild(alto);
-            jpeditorAttr.CrrentCell = jpeditorAttr.grids[j][k];
-            console.log(jpeditorAttr.CrrentCell);
+            jpeditorAttr.currentgrid = jpeditorAttr.grids[j][k];
+            console.log(jpeditorAttr.currentgrid);
 
 
         }, false);
+
 
     </script>
 

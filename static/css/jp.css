@@ -207,7 +207,13 @@ a {
     font-size: 0.8em;
     padding: 10px 300px;
 }
+.wrapper ul{
+    display: -webkit-flex; /*在webkit内核的浏览器上使用要加前缀*/
+    display: flex; /*将对象作为弹性伸缩盒显示*/
+    list-style: none;
+    justify-content: space-between;
 
+}
 .wrapper img {
     flex-shrink: 0;
 }
@@ -220,7 +226,6 @@ a {
     margin-bottom: 20px;
     color: #212121;
     transform: rotate3d(10, 20, 30, -5deg);
-
 }
 
 .wrapper div > img {

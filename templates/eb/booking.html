@@ -1,0 +1,100 @@
+{% extends "eb/ebBase.html" %}
+{% load static %}
+{% block title %}记录账务{% endblock %}
+{% block css %}
+
+{% endblock %}
+{% block breadcrumb %}
+
+
+{% endblock %}
+{% block content %}
+    <div class="wrapper">
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            {% for book in form %}
+                <div class="item">
+                    {# 拿到数据字段的labels,没有就默认显示字段名 #}
+                    <label>{{ book.label }}:</label><span class="errorlist">{{ book.help_text }}</span>{{ book.errors }}
+                    <div>{{ book }}</div>
+                </div>
+            {% endfor %}
+            <div class="item">
+                <input type="submit" value="提交" class="button">
+            </div>
+        </form>
+    </div>
+    <div class="wrapper">
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+
+    </div>
+    <div class="wrapper_column">
+    <div><span><strong>总计：</strong><span id="result"></span></span></div>
+     <div>
+         <table id="yourbook" class="list_table">
+             <thead>
+             <th>时间</th>
+             <th>对象</th>
+             <th>类别</th>
+             <th>内容</th>
+             <th>备注</th>
+             <th>金额</th>
+             <th>删除</th>
+             </thead>
+             {% for i in booking %}
+                 <tr>
+                     <td>{{ i.add_time|date:"Fj" }}</td>
+                     <td>{{ i.bookingobject }}</td>
+                     <td>{{ i.bookingtype }}</td>
+                     <td>{{ i.bookingdetail|default:"" }}</td>
+                     <td>{{ i.bookingremarks|default:"" }}</td>
+                     <td>{{ i.amount }}</td>
+                     <td><a href="{% url 'eb:delbooking' i.id %}" onclick="javascript:return del(this)">✘</a></td>
+                 </tr>
+
+             {% endfor %}
+         </table></div>
+
+    </div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/maths.js' %}"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            huizong();
+        }
+    </script>
+    <script type="text/javascript">
+        function del(e) {
+
+            var sel_del_tr = e.parentNode.parentNode;
+            var t = sel_del_tr.cells[0].innerHTML;
+            var rate = sel_del_tr.cells[1].innerHTML;
+            var type = sel_del_tr.cells[2].innerHTML;
+            var amount = sel_del_tr.cells[5].innerHTML;
+
+            if (confirm("确实要删除" + t + rate + "费用类别：" + type + "，金额为：" + amount + "吗？")) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+    </script>
+    <script type="text/javascript">
+        function huizong() {
+            let result= 0;
+            let detail = document.querySelector("#yourbook").rows;
+            for (let i = 1; i < detail.length; i++) {
+                result = Number(detail[i].cells[5].innerHTML).add(result);
+
+            }
+            let hz= document.querySelector("#result");
+            hz.innerHTML=result;
+
+        }
+
+    </script>
+{% endblock %}

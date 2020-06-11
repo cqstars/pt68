@@ -1,0 +1,35 @@
+{% load static %}
+
+{% if result %}
+    <div><span><strong>总计：</strong><span>{{ hz }}</span></span></div>
+    <div>
+        <table  class="list_table">
+            <thead>
+            <th>时间</th>
+            <th>对象</th>
+            <th>类别</th>
+            <th>内容</th>
+            <th>备注</th>
+            <th>金额</th>
+            <th>核销</th>
+            <th>经办</th>
+            </thead>
+            {% for i in result %}
+                <tr>
+                    <td>{{ i.add_time|date:"Fj" }}</td>
+                    <td>{{ i.bookingobject }}</td>
+                    <td>{{ i.bookingtype }}</td>
+                    <td>{{ i.bookingdetail|default:"" }}</td>
+                    <td>{{ i.bookingremarks|default:"" }}</td>
+                    <td>{{ i.amount }}</td>
+                    <td>{% if i.issubmit %}已核{% else %}未核{% endif %}</td>
+                    <td>{{ i.submituser.nick_name }}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+{% else %}
+    <span style="color: red">没有数据</span>
+{% endif %}
+

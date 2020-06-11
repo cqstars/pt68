@@ -1,0 +1,124 @@
+{% extends "eb/ebBase.html" %}
+{% load static %}
+{% block title %}查询{% endblock %}
+{% block css %}
+    <style type="text/css">
+
+
+    </style>
+
+{% endblock %}
+{% block content %}
+    <div class="wrapper" style="flex-direction: column">
+        <strong>选择开始时间：</strong>
+        <input type="date" value="2020-05-01" name="starttime"/>
+        <strong>选择结束时间：</strong>
+        <input type="date" value="2020-05-01" name="endtime"/>
+    </div>
+    <div class="wrapper_noflex">
+        <ul>
+            <li><strong>报销人：</strong></li>
+            {% if submituser %}
+                {% for i in submituser %}
+                    <li><input type="radio" name="submituser" value="{{ i.id }}" onclick="doClick(this)"
+                               v=0>{{ i.nick_name }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <div class="wrapper_noflex">
+        <ul>
+            <li>
+                <strong>费用类别：</strong></li>
+            {% if expensestype %}
+                {% for i in expensestype %}
+                    <li><input type="radio" name="expensestype" value="{{ i.id }}" onclick="doClick(this)" v=0>{{ i.name }} </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <div class="wrapper_noflex">
+        <ul>
+            <li>
+                <strong>是否报销：</strong></li>
+            <li><input type="radio" name="issubmit" value="0" onclick="doClick(this)" v=0>没有</li>
+            <li><input type="radio" name="issubmit" value="1" onclick="doClick(this)" v=0>有</li>
+        </ul>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="wrapper">
+        <input type="submit" class="button" value="提交查询" onclick="inquery()">
+    </div>
+    <div class="wrapper_column" id="result">
+
+    </div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+    </script>
+    <script type="text/javascript">
+        function doClick(obj) {
+            var myv = obj.attributes["v"].nodeValue;
+            if (myv == 0) {
+                obj.setAttribute("v", 1);
+                obj.checked = true;
+            } else {
+                obj.setAttribute("v", 0);
+                obj.checked = false;
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function inquery() {
+            let starttime = document.getElementsByName("starttime")[0].value;
+            let endtime = document.getElementsByName("endtime")[0].value;
+            let submituser = get_radiovalue("submituser");
+            let expensestype = get_radiovalue("expensestype");
+            let issubmit = get_radiovalue("issubmit");
+            console.log(starttime, endtime, submituser, expensestype, issubmit);
+            ajax(starttime,endtime,submituser,expensestype,issubmit);
+        }
+
+        function ajax(starttime,endtime,submituser,expensestype,issubmit) {
+            //创建异步对象
+            var xhr = new XMLHttpRequest();
+//设置请求的类型及url
+//post请求一定要添加请求头才行不然会报错
+            xhr.open('post', '{% url 'eb:inquery' %}');
+            let csrftoken = getCookie('csrftoken');
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+//发送请求
+            let data='starttime='+starttime+'&endtime='+endtime+'&submituser='+submituser+'&expensestype='+expensestype+'&issubmit='+issubmit;
+            xhr.send(data);
+            xhr.onreadystatechange = function () {
+                // 这步为判断服务器是否正确响应
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                    document.getElementById("result").innerHTML=xhr.responseText;
+                }
+            };
+
+        }
+        //遍历radio得到选中状态的radio值
+        function get_radiovalue(radioname) {
+            let chkObjs = null;
+            var obj = document.getElementsByName(radioname)
+            for (var i = 0; i < obj.length; i++) { //遍历Radio
+                if (obj[i].checked) {
+                    chkObjs = obj[i].value;
+                }
+            }
+            return chkObjs;
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="{% static 'js/polyfills.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/polyfillsIE.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/svg.esm.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/svg.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/svg.node.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/nmn.css' %}">
+    <title>Title </title>
+</head>
+<body>
+<div id="Nmn"></div>
+<script type="text/javascript">
+    var draw = SVG('Nmn').size(300,300);
+    var rect = draw.rect(100, 100).attr({fill: '#f06'});
+</script>
+</body>
+
+</html>

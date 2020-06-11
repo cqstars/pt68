@@ -12,12 +12,13 @@ class indexview(View):
         _short_matches = re.compile(_short_matches, re.IGNORECASE)
 
         if _long_matches.search(userAgent) != None:
-            return render(request, "index.html")
+            return render(request, "mobile_index.html")
         # user_agent = userAgent[0:4]
         if _short_matches.search(userAgent) != None:
-            return render(request, "index.html")
+            return render(request, "mobile_index.html")
 
-        return render(request, "pc/pc.html")
+        # return render(request, "pc/pc.html")
+        return render(request, "mobile_index.html")
 
 
 

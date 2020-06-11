@@ -4,14 +4,24 @@
 }
 
 body, html {
-    width: 100%;
     height: 100%;
+    min-height: 100%;
+    width: 100vw;
+    height: 100vh;
     font: normal 100% Helvetica, Arial, sans-serif;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+
 }
 
 body a {
     text-decoration: none;
     cursor: pointer;
+}
+
+body {
+
 }
 
 h1 {
@@ -23,62 +33,128 @@ h2 {
 }
 
 header {
-    width: 100%;
-    height: 80px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    box-shadow: 1px 1px 2px rgba(205, 215, 215, .8);
+    grid-row: 1/2;
+    grid-column: 1/2;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: center;
+    align-items: center;
+
+    /* width: 100%;
+     height: 80px;
+     position: absolute;
+     left: 0;
+     top: 0;
+     box-shadow: 1px 1px 2px rgba(205, 215, 215, .8);*/
 }
 
-.title {
-    width: 100%;
+header div:nth-child(1) {
+    flex: 0.3;
     text-align: center;
-    height: 80px;
-    line-height: 40px;
+}
+
+header div:nth-child(2) {
+    flex: 0.7;
+}
+
+header div:nth-child(2) > h2 {
+    text-align: center;
+}
+
+header div:nth-child(2) > p {
+    font-size: 0.8em;
 }
 
 section {
-    width: 100%;
-    position: absolute;
-    left: 0;
-    top: 80px;
-    bottom: 49px;
-    /*background-color: yellowgreen;*/
+    grid-row: 2/3;
+    grid-column: 1/2;
     overflow: auto;
+    padding: 10px;
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    /* width: 100%;
+     position: absolute;
+     left: 0;
+     top: 80px;
+     bottom: 49px;
+     /*background-color: yellowgreen;
+     overflow: auto;*/
 
 }
-.breadcrumb{
+
+footer {
+    grid-row: 3/4;
+    grid-column: 1/2;
+    background-color: #c9c9c9;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    box-shadow:0px -2px 1px rgba(0,0,0,0.1);
+    background:#f1f1f1;
+
+    /*font-size: 0.8em;
+ width: 100%;
+ height: 49px;
+ position: absolute;
+ left: 0;
+ bottom: 0;
+ list-style: none;
+ display: -webkit-flex; /* Safari
+ display: flex;
+ background-color: #f0b694;*/
+    /*border-top:1px solid #e5ae8d;
+    box-shadow: 1px -1px 3px rgba(247, 210, 188, .8);*/
+
+}
+
+footer .tab {
+    padding: 6px;
+    box-sizing: padding-box;
+    font-size: 0.8em;
+    text-align: center;
+    /*flex: 1;
+    text-align: center;
+    line-height: 1.5em;
+    margin: 3px;*/
+}
+
+.breadcrumb {
     font-size: 0.8em;
 }
-#result
-{
+
+#result {
     font-size: 0.8em;
     color: #ff0000;
 }
+
 /*----------------------------牌计分样式----------------------------------------------------------*/
-.set_game
-{
+.set_game {
     font-size: 1em;
 }
-.set_game div{
+
+.set_game div {
     margin-bottom: 5px;
     padding: 5px;
 }
 
-.set_game div input{
+.set_game div input {
     margin-left: 3px;
     border: 1px solid #a1a1a1;
     border-radius: 2px;
     padding: 5px 2px;
 }
-.card_content{
+
+.card_content {
     display: -webkit-flex; /* Safari */
     display: flex;
     font-size: 0.8em;
     flex-wrap: wrap;
     padding: 5px;
 }
+
 .card_content .item {
     font-size: 0.8em;
     margin: 10px;
@@ -97,9 +173,11 @@ section {
     flex-wrap: wrap;
     padding: 5px;
 }
-.content_flex div{
+
+.content_flex div {
     margin-bottom: 10px;
 }
+
 .content_flex input:not([type=submit]) {
     margin-left: 3px;
     border: 1px solid #a1a1a1;
@@ -122,7 +200,7 @@ section {
     padding: 5px 2px;
 }
 
-.content_flex_fwp div{
+.content_flex_fwp div {
     margin-bottom: 5px;
     width: 100%;
 }
@@ -151,9 +229,10 @@ section {
     font-size: 0.7em;
     font-style: italic;
 }
+
 /*----------------------------input里面placeholder样式设置*/
 /*---------------submit样式------------------------*/
-.btn2{
+.btn2 {
     display: block;
     width: 80px;
     /*border-style: solid;*/
@@ -167,6 +246,7 @@ section {
     border-radius: 5px;
     text-align: center;
 }
+
 .btn {
     border-style: none;
     margin: 5px;
@@ -250,29 +330,6 @@ section {
     color: #ffffff;
 }
 
-footer {
-    font-size: 0.8em;
-    width: 100%;
-    height: 49px;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    list-style: none;
-    display: -webkit-flex; /* Safari */
-    display: flex;
-    background-color: #f0b694;
-    /*border-top:1px solid #e5ae8d;*/
-    box-shadow: 1px -1px 3px rgba(247, 210, 188, .8);
-
-}
-
-footer .tab {
-    flex: 1;
-    text-align: center;
-    line-height: 1.5em;
-    margin: 3px;
-}
-
 .icon {
     width: 1.5em;
     height: 1.5em;
@@ -281,7 +338,7 @@ footer .tab {
     overflow: hidden;
 }
 
-.errorlist,.error{
+.errorlist, .error {
     font-size: 0.8em;
     font-style: italic;
     color: #db192a;

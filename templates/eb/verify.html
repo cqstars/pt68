@@ -1,0 +1,114 @@
+{% extends "eb/ebBase.html" %}
+{% load static %}
+{% block title %}核账报销{% endblock %}
+{% block css %}
+{% endblock %}
+{% block content %}
+    <div class="wrapper_column">
+        {% if book %}
+            <div><span><strong>总计：</strong><span id="result"></span></span></div>
+            <div>
+                <table id="yourbook" class="list_table">
+                    <thead>
+                    <th>时间</th>
+                    <th>对象</th>
+                    <th>类别</th>
+                    <th>内容</th>
+                    <th>备注</th>
+                    <th>金额</th>
+                    <th>核销</th>
+                    <th>用户</th>
+                    </thead>
+                    {% for i in book %}
+                        <tr onclick="verify(this,{{ i.id }})" style="cursor:pointer">
+                            <td>{{ i.add_time|date:"Fj" }}</td>
+                            <td>{{ i.bookingobject }}</td>
+                            <td>{{ i.bookingtype }}</td>
+                            <td>{{ i.bookingdetail|default:"" }}</td>
+                            <td>{{ i.bookingremarks|default:"" }}</td>
+                            <td>{{ i.amount }}</td>
+                            <td>{% if i.issubmit %}已核{% else %}未核{% endif %}</td>
+                            <td>{{ i.submituser.nick_name }}</td>
+                        </tr>
+
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <span style="color: red">没有数据</span>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/maths.js' %}"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            huizong();
+        }
+    </script>
+    <script type="text/javascript">
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg))
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+    </script>
+    <script type="text/javascript">
+        function verify(e, id) {
+            if (confirm('确定核销：' + e.cells[0].innerHTML + "为" + e.cells[1].innerHTML + "在" + e.cells[2].innerHTML + "花费金额：" + e.cells[5].innerHTML + "的费用吗？") == true) {
+                //创建异步对象
+                var xhr = new XMLHttpRequest();
+//设置请求的类型及url
+//post请求一定要添加请求头才行不然会报错
+                xhr.open('post', '{% url 'eb:verify' %}');
+                let csrftoken = getCookie('csrftoken');
+                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+//发送请求
+                let data = 'id=' + id;
+                xhr.send(data);
+                xhr.onreadystatechange = function () {
+                    // 这步为判断服务器是否正确响应
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+
+                        if (xhr.responseText == "ok") {
+                            e.cells[6].innerHTML = "✔";
+                            huizong2(e);
+                        }
+                    }
+                };
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    </script>
+    <script type="text/javascript">
+        function huizong() {
+            let result = 0;
+            let detail = document.querySelector("#yourbook").rows;
+            for (let i = 1; i < detail.length; i++) {
+                result = Number(detail[i].cells[5].innerHTML).add(result);
+
+            }
+            let hz = document.querySelector("#result");
+            hz.innerHTML = result;
+
+        }
+         function huizong2(e) {
+            let result = 0;
+            let detail = document.querySelector("#yourbook").rows;
+            for (let i = 1; i < detail.length; i++) {
+                result = Number(detail[i].cells[5].innerHTML).add(result);
+            }
+
+            let hz = document.querySelector("#result");
+            hz.innerHTML = Number(result).sub(e.cells[5].innerHTML);
+
+        }
+
+    </script>
+{% endblock %}

@@ -21,8 +21,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', TemplateView.as_view(template_name="pc.html"), name="index"),
     path('jp', TemplateView.as_view(template_name="jp/jp.html"), name="jp"),
+    path('nmn', TemplateView.as_view(template_name="jp/Nmusicnotation.html"), name="nmn"),
     path('game', TemplateView.as_view(template_name="canvas/game.html"), name="game"),
     path('', include('index.urls', 'index')),
     path('users/', include('users.urls', 'users')),
     path('sc_card/', include('sc_card.urls', 'sc_card')),
+    path('eb/', include('eb.urls', 'eb')),
+    path('blood/', include('bloodsugermonitor.urls', 'bloodsugermonitor')),
+
 ]

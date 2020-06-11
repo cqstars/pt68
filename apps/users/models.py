@@ -10,6 +10,7 @@ class UserProfile(AbstractUser):
     address = models.CharField(max_length=100, verbose_name="地址",default="")
     mobile = models.CharField(max_length=11,  verbose_name="电话",unique=True)
     image = models.ImageField( verbose_name="上传图片",upload_to="media/%Y/%m",default="media/default.png", max_length=100)
+    user_type=models.CharField(max_length=10, verbose_name="用户类型", default="1")
 
     class Meta:
         verbose_name = "用户信息"
